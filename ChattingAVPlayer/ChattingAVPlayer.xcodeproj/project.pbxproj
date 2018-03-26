@@ -16,6 +16,10 @@
 		9B3DA0FD20327A1100708A05 /* ChattingAVPlayerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B3DA0FC20327A1100708A05 /* ChattingAVPlayerUITests.swift */; };
 		9BB5BB6C20688440006DDA9F /* SubtitlesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB6B20688440006DDA9F /* SubtitlesParser.swift */; };
 		9BB5BB6D20688440006DDA9F /* SubtitlesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB6B20688440006DDA9F /* SubtitlesParser.swift */; };
+		9BB5BB6F20689A78006DDA9F /* ChattingPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB6E20689A78006DDA9F /* ChattingPlayerView.swift */; };
+		9BB5BB7020689A78006DDA9F /* ChattingPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB6E20689A78006DDA9F /* ChattingPlayerView.swift */; };
+		9BB5BB722068A42F006DDA9F /* CellChatDefaultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB712068A42F006DDA9F /* CellChatDefaultTableViewCell.swift */; };
+		9BB5BB732068A42F006DDA9F /* CellChatDefaultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB712068A42F006DDA9F /* CellChatDefaultTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +54,8 @@
 		9B3DA0FC20327A1100708A05 /* ChattingAVPlayerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingAVPlayerUITests.swift; sourceTree = "<group>"; };
 		9B3DA0FE20327A1100708A05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BB5BB6B20688440006DDA9F /* SubtitlesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesParser.swift; sourceTree = "<group>"; };
+		9BB5BB6E20689A78006DDA9F /* ChattingPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingPlayerView.swift; sourceTree = "<group>"; };
+		9BB5BB712068A42F006DDA9F /* CellChatDefaultTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellChatDefaultTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +139,8 @@
 			isa = PBXGroup;
 			children = (
 				9BB5BB6B20688440006DDA9F /* SubtitlesParser.swift */,
+				9BB5BB6E20689A78006DDA9F /* ChattingPlayerView.swift */,
+				9BB5BB712068A42F006DDA9F /* CellChatDefaultTableViewCell.swift */,
 			);
 			path = Player;
 			sourceTree = "<group>";
@@ -271,7 +279,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BB5BB722068A42F006DDA9F /* CellChatDefaultTableViewCell.swift in Sources */,
 				9BB5BB6C20688440006DDA9F /* SubtitlesParser.swift in Sources */,
+				9BB5BB6F20689A78006DDA9F /* ChattingPlayerView.swift in Sources */,
 				9B3DA0DF20327A1100708A05 /* ViewController.swift in Sources */,
 				9B3DA0DD20327A1100708A05 /* AppDelegate.swift in Sources */,
 			);
@@ -290,7 +300,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BB5BB732068A42F006DDA9F /* CellChatDefaultTableViewCell.swift in Sources */,
 				9B3DA0FD20327A1100708A05 /* ChattingAVPlayerUITests.swift in Sources */,
+				9BB5BB7020689A78006DDA9F /* ChattingPlayerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
