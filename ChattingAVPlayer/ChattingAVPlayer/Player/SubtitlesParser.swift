@@ -15,11 +15,17 @@ public class SubtitlesParser {
   
   public init(subtitles string: String) {
     self.savedString = string
+    if let savedString = self.savedString {
+      self.parsedPayload = self.parseSubtitlesString(savedString)
+    }
   }
   
   public init(file filePath: URL, encoding: String.Encoding = String.Encoding.utf8) {
     if let string = try? String(contentsOf: filePath, encoding: encoding) {
       self.savedString = string
+      if let savedString = self.savedString {
+        self.parsedPayload = self.parseSubtitlesString(savedString)
+      }
     }
   }
   
@@ -88,5 +94,77 @@ public class SubtitlesParser {
     catch {
       return nil
     }
+  }
+  
+  public func searchSubtitles(at time: TimeInterval) -> [String] {
+    guard let parsedPayload = self.parsedPayload else {
+      return []
+    }
+    
+    var messages: [String] = []
+    
+    let intTime = Int(time)
+    for i in 0..<intTime {
+      guard let secondParsedSubtitles = parsedPayload[i.description], secondParsedSubtitles.count > 0 else {
+        continue
+      }
+      
+      secondParsedSubtitles.forEach({ (subtitleDictionary) in
+        if let message = subtitleDictionary["chat"] as? String {
+          messages.append(message)
+        }
+      })
+    }
+    
+    guard let secondParsedSubtitles = parsedPayload[intTime.description], secondParsedSubtitles.count > 0 else {
+      return messages
+    }
+    let filteredSubtitles = secondParsedSubtitles.filter { (subtitleDictionary) -> Bool in
+      guard let startTime = subtitleDictionary["start"] as? TimeInterval else {
+        return false
+      }
+      
+      return startTime <= time
+    }
+    
+    filteredSubtitles.forEach { (subtitleDictionary) in
+      guard let message = subtitleDictionary["chat"] as? String else {
+        return
+      }
+      messages.append(message)
+    }
+    
+    return messages
+  }
+  
+  public func readNextSubtitles(to time: TimeInterval) -> [String] {
+    guard let parsedPayload = self.parsedPayload, time > self.previousReadTimeInterval else {
+      self.previousReadTimeInterval = time
+      return []
+    }
+    
+    let previousSecond = Int(self.previousReadTimeInterval)
+    let second = Int(time)
+    
+    var messages: [String] = []
+    
+    for s in previousSecond...second {
+      guard let secondParsedSubtitles = parsedPayload[s.description] else {
+        continue
+      }
+      
+      secondParsedSubtitles.forEach({ (subtitle) in
+        guard let startTime = subtitle["start"] as? TimeInterval, let message = subtitle["chat"] as? String else {
+          return
+        }
+        
+        if startTime > self.previousReadTimeInterval, startTime <= time {
+          messages.append(message)
+        }
+      })
+    }
+    
+    self.previousReadTimeInterval = time
+    return messages
   }
 }
