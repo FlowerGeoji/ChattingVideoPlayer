@@ -54,7 +54,30 @@ class ChattingPlayerView: UIView {
   override func didMoveToWindow() {
     super.didMoveToWindow()
     tableViewChats.separatorStyle = .none
-    tableViewChats.backgroundColor = .clear
+    tableViewChats.backgroundColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
+  }
+  
+  override func draw(_ rect: CGRect) {
+    let layerHeight = tableViewChats.frame.height
+    let layerWidth = tableViewChats.frame.width
+    
+    let bezierPath = UIBezierPath()
+    
+    let pointA = CGPoint(x: 0, y: 0)
+    let pointB = CGPoint(x: layerWidth, y: 0)
+    let pointC = CGPoint(x: layerWidth, y: layerHeight)
+    let pointD = CGPoint(x: 0, y: layerHeight*2/3)
+    
+    bezierPath.move(to: pointA)
+    bezierPath.addLine(to: pointB)
+    bezierPath.addLine(to: pointC)
+    bezierPath.addLine(to: pointD)
+    bezierPath.close()
+    
+    let shapeLayer = CAShapeLayer()
+    shapeLayer.path = bezierPath.cgPath
+    
+    self.tableViewChats.layer.mask = shapeLayer
   }
   
   public func replaceVideo(videoUrl: URL, subtitleUrl: URL? = nil) {
@@ -119,6 +142,12 @@ extension ChattingPlayerView: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    <#code#>
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: keyOfCellChat) as? CellChatDefault else {
+      return UITableViewCell()
+    }
+    
+    cell.chat = self.chats[indexPath.row]
+    
+    return cell
   }
 }
