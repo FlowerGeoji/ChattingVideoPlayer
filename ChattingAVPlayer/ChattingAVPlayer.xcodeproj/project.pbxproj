@@ -18,6 +18,10 @@
 		9BB5BB7020689A78006DDA9F /* ChattingPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB6E20689A78006DDA9F /* ChattingPlayerView.swift */; };
 		9BB5BB722068A42F006DDA9F /* CellChatDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB712068A42F006DDA9F /* CellChatDefault.swift */; };
 		9BB5BB732068A42F006DDA9F /* CellChatDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB712068A42F006DDA9F /* CellChatDefault.swift */; };
+		9BC83F96207DBE400015F8E5 /* SubtitlesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC83F95207DBE400015F8E5 /* SubtitlesParser.swift */; };
+		9BC83F97207DBE400015F8E5 /* SubtitlesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC83F95207DBE400015F8E5 /* SubtitlesParser.swift */; };
+		9BC83F98207DBE920015F8E5 /* SubtitlesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC83F95207DBE400015F8E5 /* SubtitlesParser.swift */; };
+		9BC83F99207DBE950015F8E5 /* ChattingPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB6E20689A78006DDA9F /* ChattingPlayerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +57,7 @@
 		9B3DA0FE20327A1100708A05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BB5BB6E20689A78006DDA9F /* ChattingPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingPlayerView.swift; sourceTree = "<group>"; };
 		9BB5BB712068A42F006DDA9F /* CellChatDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellChatDefault.swift; sourceTree = "<group>"; };
+		9BC83F95207DBE400015F8E5 /* SubtitlesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +140,7 @@
 		9BB5BB6A20688424006DDA9F /* Player */ = {
 			isa = PBXGroup;
 			children = (
+				9BC83F95207DBE400015F8E5 /* SubtitlesParser.swift */,
 				9BB5BB6E20689A78006DDA9F /* ChattingPlayerView.swift */,
 				9BB5BB712068A42F006DDA9F /* CellChatDefault.swift */,
 			);
@@ -275,6 +281,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BC83F96207DBE400015F8E5 /* SubtitlesParser.swift in Sources */,
 				9BB5BB722068A42F006DDA9F /* CellChatDefault.swift in Sources */,
 				9BB5BB6F20689A78006DDA9F /* ChattingPlayerView.swift in Sources */,
 				9B3DA0DF20327A1100708A05 /* ViewController.swift in Sources */,
@@ -286,6 +293,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BC83F99207DBE950015F8E5 /* ChattingPlayerView.swift in Sources */,
+				9BC83F97207DBE400015F8E5 /* SubtitlesParser.swift in Sources */,
 				9B3DA0F220327A1100708A05 /* ChattingAVPlayerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -294,6 +303,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9BC83F98207DBE920015F8E5 /* SubtitlesParser.swift in Sources */,
 				9BB5BB732068A42F006DDA9F /* CellChatDefault.swift in Sources */,
 				9B3DA0FD20327A1100708A05 /* ChattingAVPlayerUITests.swift in Sources */,
 				9BB5BB7020689A78006DDA9F /* ChattingPlayerView.swift in Sources */,

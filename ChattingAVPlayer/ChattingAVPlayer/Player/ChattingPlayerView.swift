@@ -24,15 +24,7 @@ class ChattingPlayerView: UIView {
   
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
-    self.commonInit()
-  }
-  
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-    self.commonInit()
-  }
-  
-  private func commonInit() {
+    
     self.backgroundColor = .black
     
     // Set AVPlayer
@@ -45,39 +37,12 @@ class ChattingPlayerView: UIView {
     tableViewChats.translatesAutoresizingMaskIntoConstraints = false
     tableViewChats.delegate = self
     tableViewChats.dataSource = self
+    tableViewChats.separatorStyle = .none
+    tableViewChats.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
     tableViewChats.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.3).isActive = true
     tableViewChats.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
     tableViewChats.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
     tableViewChats.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-  }
-  
-  override func didMoveToWindow() {
-    super.didMoveToWindow()
-    tableViewChats.separatorStyle = .none
-    tableViewChats.backgroundColor = UIColor(red: 1.0, green: 0.0, blue: 0.0, alpha: 1.0)
-  }
-  
-  override func draw(_ rect: CGRect) {
-    let layerHeight = tableViewChats.frame.height
-    let layerWidth = tableViewChats.frame.width
-    
-    let bezierPath = UIBezierPath()
-    
-    let pointA = CGPoint(x: 0, y: 0)
-    let pointB = CGPoint(x: layerWidth, y: 0)
-    let pointC = CGPoint(x: layerWidth, y: layerHeight)
-    let pointD = CGPoint(x: 0, y: layerHeight*2/3)
-    
-    bezierPath.move(to: pointA)
-    bezierPath.addLine(to: pointB)
-    bezierPath.addLine(to: pointC)
-    bezierPath.addLine(to: pointD)
-    bezierPath.close()
-    
-    let shapeLayer = CAShapeLayer()
-    shapeLayer.path = bezierPath.cgPath
-    
-    self.tableViewChats.layer.mask = shapeLayer
   }
   
   public func replaceVideo(videoUrl: URL, subtitleUrl: URL? = nil) {
@@ -104,6 +69,7 @@ class ChattingPlayerView: UIView {
           return
         }
         strongSelf.handleSubtitles(seconds: time.seconds)
+        
       })
     }
   }
