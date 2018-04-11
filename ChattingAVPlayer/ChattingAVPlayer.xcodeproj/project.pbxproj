@@ -14,8 +14,6 @@
 		9B3DA0E720327A1100708A05 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B3DA0E520327A1100708A05 /* LaunchScreen.storyboard */; };
 		9B3DA0F220327A1100708A05 /* ChattingAVPlayerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B3DA0F120327A1100708A05 /* ChattingAVPlayerTests.swift */; };
 		9B3DA0FD20327A1100708A05 /* ChattingAVPlayerUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B3DA0FC20327A1100708A05 /* ChattingAVPlayerUITests.swift */; };
-		9BB5BB6C20688440006DDA9F /* SubtitlesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB6B20688440006DDA9F /* SubtitlesParser.swift */; };
-		9BB5BB6D20688440006DDA9F /* SubtitlesParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB6B20688440006DDA9F /* SubtitlesParser.swift */; };
 		9BB5BB6F20689A78006DDA9F /* ChattingPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB6E20689A78006DDA9F /* ChattingPlayerView.swift */; };
 		9BB5BB7020689A78006DDA9F /* ChattingPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB6E20689A78006DDA9F /* ChattingPlayerView.swift */; };
 		9BB5BB722068A42F006DDA9F /* CellChatDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5BB712068A42F006DDA9F /* CellChatDefault.swift */; };
@@ -53,7 +51,6 @@
 		9B3DA0F820327A1100708A05 /* ChattingAVPlayerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChattingAVPlayerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B3DA0FC20327A1100708A05 /* ChattingAVPlayerUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingAVPlayerUITests.swift; sourceTree = "<group>"; };
 		9B3DA0FE20327A1100708A05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9BB5BB6B20688440006DDA9F /* SubtitlesParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubtitlesParser.swift; sourceTree = "<group>"; };
 		9BB5BB6E20689A78006DDA9F /* ChattingPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChattingPlayerView.swift; sourceTree = "<group>"; };
 		9BB5BB712068A42F006DDA9F /* CellChatDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellChatDefault.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -138,7 +135,6 @@
 		9BB5BB6A20688424006DDA9F /* Player */ = {
 			isa = PBXGroup;
 			children = (
-				9BB5BB6B20688440006DDA9F /* SubtitlesParser.swift */,
 				9BB5BB6E20689A78006DDA9F /* ChattingPlayerView.swift */,
 				9BB5BB712068A42F006DDA9F /* CellChatDefault.swift */,
 			);
@@ -280,7 +276,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9BB5BB722068A42F006DDA9F /* CellChatDefault.swift in Sources */,
-				9BB5BB6C20688440006DDA9F /* SubtitlesParser.swift in Sources */,
 				9BB5BB6F20689A78006DDA9F /* ChattingPlayerView.swift in Sources */,
 				9B3DA0DF20327A1100708A05 /* ViewController.swift in Sources */,
 				9B3DA0DD20327A1100708A05 /* AppDelegate.swift in Sources */,
@@ -291,7 +286,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9BB5BB6D20688440006DDA9F /* SubtitlesParser.swift in Sources */,
 				9B3DA0F220327A1100708A05 /* ChattingAVPlayerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
