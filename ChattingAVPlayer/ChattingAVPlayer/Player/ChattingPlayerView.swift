@@ -19,8 +19,9 @@ class ChattingPlayerView: UIView {
   private let queue: DispatchQueue = DispatchQueue.init(label: "AVCPV_QUEUE")
   public var chatsIntervalSecond: Double = 1.0
   
-  private let keyOfCellChat = "CellChatIdentifier"
-  private(set) var chats: [String] = [] { didSet { self.tableViewChats.reloadData() } }
+  private let keyOfDefaultCellChat = "DEFAULT_CAHT_CELL"
+  private let keyOfCustomCellChat = "CUSTOM_CAHT_CELL"
+  private(set) var chats: [String] = [] { didSet(oldVal) { self.didSetChats(oldVal: oldVal) } }
   
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
@@ -38,7 +39,7 @@ class ChattingPlayerView: UIView {
     tableViewChats.delegate = self
     tableViewChats.dataSource = self
     tableViewChats.separatorStyle = .none
-    tableViewChats.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+    tableViewChats.register(CellChatDefault.self, forCellReuseIdentifier: keyOfDefaultCellChat)
     tableViewChats.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: 0.3).isActive = true
     tableViewChats.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
     tableViewChats.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
@@ -79,12 +80,37 @@ class ChattingPlayerView: UIView {
       return
     }
     
+    if self.chats.count > 50 {
+      self.chats.removeFirst(25)
+    }
     let subtitles = subtitlesParser.readNextSubtitles(to: seconds)
     
-    DispatchQueue.main.sync {
-      // Code for UI
-      if subtitles.count > 0 {
-        self.chats.append(contentsOf: subtitles)
+    self.chats.append(contentsOf: subtitles)
+  }
+  
+  private func didSetChats(oldVal: [String]) {
+    if oldVal.count < self.chats.count {
+      // added
+      var insertPaths: [IndexPath] = []
+      for i in oldVal.count ..< self.chats.count {
+        insertPaths.append(IndexPath.init(row: i, section: 0))
+      }
+      DispatchQueue.main.sync {
+        // Code for UI
+        self.tableViewChats.insertRows(at: insertPaths, with: .fade)
+        self.tableViewChats.scrollToRow(at: IndexPath.init(row: self.chats.count-1, section: 0), at: .bottom, animated: true)
+      }
+    }
+    
+    if oldVal.count > self.chats.count {
+      // deleted
+      var deletePaths: [IndexPath] = []
+      for i in 0 ..< (oldVal.count - self.chats.count) {
+        deletePaths.append(IndexPath.init(row: i, section: 0))
+      }
+      DispatchQueue.main.sync {
+        // Code for UI
+        self.tableViewChats.deleteRows(at: deletePaths, with: .none)
       }
     }
   }
@@ -108,7 +134,7 @@ extension ChattingPlayerView: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    guard let cell = tableView.dequeueReusableCell(withIdentifier: keyOfCellChat) as? CellChatDefault else {
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: keyOfDefaultCellChat) as? CellChatDefault else {
       return UITableViewCell()
     }
     
