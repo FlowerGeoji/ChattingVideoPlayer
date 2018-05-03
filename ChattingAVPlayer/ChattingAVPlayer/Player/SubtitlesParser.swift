@@ -96,15 +96,17 @@ public class SubtitlesParser {
     }
   }
   
-  public func searchSubtitles(at time: TimeInterval) -> [String] {
+  public func searchSubtitles(from fromTime: TimeInterval = 0.0, to toTime: TimeInterval) -> [String] {
     guard let parsedPayload = self.parsedPayload else {
       return []
     }
     
     var messages: [String] = []
     
-    let intTime = Int(time)
-    for i in 0..<intTime {
+    let fromTimeInt = Int(fromTime)
+    let toTimeInt = Int(toTime)
+    
+    for i in fromTimeInt..<toTimeInt {
       guard let secondParsedSubtitles = parsedPayload[i.description], secondParsedSubtitles.count > 0 else {
         continue
       }
@@ -116,7 +118,7 @@ public class SubtitlesParser {
       })
     }
     
-    guard let secondParsedSubtitles = parsedPayload[intTime.description], secondParsedSubtitles.count > 0 else {
+    guard let secondParsedSubtitles = parsedPayload[toTimeInt.description], secondParsedSubtitles.count > 0 else {
       return messages
     }
     secondParsedSubtitles.forEach { (subtitleDictionary) in
@@ -124,7 +126,7 @@ public class SubtitlesParser {
         return
       }
       
-      if startTime <= time {
+      if startTime <= toTime {
         messages.append(message)
       }
     }

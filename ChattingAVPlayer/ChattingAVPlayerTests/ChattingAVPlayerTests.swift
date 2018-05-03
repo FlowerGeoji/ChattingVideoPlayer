@@ -25,10 +25,10 @@ class ChattingAVPlayerTests: XCTestCase {
     // Test Initialization of SubtitlesParser
     
     // == Initialize SubtitlesParser ===============================================================================================
-    let filePathString = "https://asset.pufflive.me/subtitles/11313/1514970441/subtitles_ec58-2018-01-03/1514966117_M4w28A.vtt"
-    guard let fileUrl: URL = URL.init(string: filePathString) else {
+    guard let fileUrl: URL = Bundle.main.url(forResource: "test", withExtension: "vtt") else {
       return
     }
+    
     let subtitlesString: String = """
 WEBVTT
 
@@ -92,9 +92,13 @@ WEBVTT
     XCTAssertEqual((parser3.parsedPayload?.count)!, 12, "Count of node should be equal to 12")
     
     // == Searching Subtitles ====================================================================================================
-    XCTAssertEqual(parser3.searchSubtitles(at: 0.0).count, 0, "")
-    XCTAssertEqual(parser3.searchSubtitles(at: 120.0).count, 4, "")
-    XCTAssertEqual(parser3.searchSubtitles(at: 3600.0).count, 12, "")
+    XCTAssertEqual(parser3.searchSubtitles(to: 0.0).count, 0, "")
+    XCTAssertEqual(parser3.searchSubtitles(to: 120.0).count, 4, "")
+    XCTAssertEqual(parser3.searchSubtitles(to: 3600.0).count, 12, "")
+    
+    XCTAssertEqual(parser3.searchSubtitles(from: 60.0, to: 120.0).count, 2, "")
+    XCTAssertEqual(parser3.searchSubtitles(from: 60.0, to: 3600.0).count, 10, "")
+    XCTAssertEqual(parser3.searchSubtitles(from: 120.0, to: 3600.0).count, 8, "")
     
     // == Reading Subtitles ======================================================================================================
     XCTAssertEqual(parser3.readNextSubtitles(to: 5.0).count, 0)         // Read subtitles from 0 seconds to 5 seconds
