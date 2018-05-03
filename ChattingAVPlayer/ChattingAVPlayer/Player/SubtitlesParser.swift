@@ -119,19 +119,14 @@ public class SubtitlesParser {
     guard let secondParsedSubtitles = parsedPayload[intTime.description], secondParsedSubtitles.count > 0 else {
       return messages
     }
-    let filteredSubtitles = secondParsedSubtitles.filter { (subtitleDictionary) -> Bool in
-      guard let startTime = subtitleDictionary["start"] as? TimeInterval else {
-        return false
-      }
-      
-      return startTime <= time
-    }
-    
-    filteredSubtitles.forEach { (subtitleDictionary) in
-      guard let message = subtitleDictionary["chat"] as? String else {
+    secondParsedSubtitles.forEach { (subtitleDictionary) in
+      guard let startTime = subtitleDictionary["start"] as? TimeInterval, let message = subtitleDictionary["chat"] as? String else {
         return
       }
-      messages.append(message)
+      
+      if startTime <= time {
+        messages.append(message)
+      }
     }
     
     return messages
