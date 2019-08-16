@@ -12,11 +12,11 @@ import AVKit
 class ChattingPlayerView: UIView {
   private let playerLayer: AVPlayerLayer = AVPlayerLayer()
   private let player: AVPlayer = AVPlayer.init()
-  private var subtitlesParser: SubtitlesParser?
   private let tableViewChats: UITableView = UITableView()
+  private let slider: UISlider = UISlider()
   
+  private var subtitlesParser: SubtitlesParser?
   private var timeObserver: Any?
-  private let queue: DispatchQueue = DispatchQueue.init(label: "AVCPV_QUEUE")
   public var chatsIntervalSecond: Double = 1.0
   
   private let keyOfDefaultCellChat = "DEFAULT_CAHT_CELL"
@@ -44,15 +44,25 @@ class ChattingPlayerView: UIView {
     tableViewChats.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
     tableViewChats.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
     tableViewChats.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
+    
+    self.addSubview(slider)
+    slider.translatesAutoresizingMaskIntoConstraints = false
+    slider.isContinuous = false
+    slider.addTarget(self, action: #selector(didChangeSliderValue), for: .valueChanged)
+    slider.heightAnchor.constraint(equalToConstant: 10).isActive = true
+    slider.leadingAnchor.constraint(equalTo: self.leadingAnchor).isActive = true
+    slider.trailingAnchor.constraint(equalTo: self.trailingAnchor).isActive = true
+    slider.bottomAnchor.constraint(equalTo: tableViewChats.topAnchor).isActive = true
   }
   
   public func replaceVideo(videoUrl: URL, subtitleUrl: URL? = nil) {
     // replace chats
-    chats = []
+    chats.removeAll()
     
     // replace video source
     let video: AVPlayerItem = AVPlayerItem(url: videoUrl)
     player.replaceCurrentItem(with: video)
+    slider.maximumValue = Float.init(CMTimeGetSeconds(video.asset.duration))
     
     // replace subtitles
     subtitlesParser = nil
@@ -65,41 +75,45 @@ class ChattingPlayerView: UIView {
       subtitlesParser = SubtitlesParser(file: subtitleUrl, encoding: .utf8)
       
       let interval = CMTime(seconds: self.chatsIntervalSecond, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
-      timeObserver = self.player.addPeriodicTimeObserver(forInterval: interval, queue: self.queue, using: { [weak self] (time) in
+      timeObserver = self.player.addPeriodicTimeObserver(forInterval: interval, queue: DispatchQueue.init(label: "PlayerTimerQueue"), using: { [weak self] (time) in
         guard let strongSelf = self else {
           return
         }
-        strongSelf.handleSubtitles(seconds: time.seconds)
         
+        guard let subtitlesParser = strongSelf.subtitlesParser else {
+          return
+        }
+        
+        if strongSelf.chats.count > 50 {
+          DispatchQueue.main.sync {
+            // Code for UI
+            strongSelf.chats.removeFirst(25)
+          }
+        }
+        let subtitles = subtitlesParser.readNextSubtitles(to: time.seconds)
+        
+        DispatchQueue.main.sync {
+          // Code for UI
+          strongSelf.chats.append(contentsOf: subtitles)
+        }
       })
     }
   }
   
-  private func handleSubtitles(seconds: TimeInterval) {
-    guard let subtitlesParser = self.subtitlesParser else {
+  private func didSetChats(oldVal: [String]) {
+    if self.chats.count <= 0 {
+      self.tableViewChats.reloadData()
       return
     }
     
-    if self.chats.count > 50 {
-      self.chats.removeFirst(25)
-    }
-    let subtitles = subtitlesParser.readNextSubtitles(to: seconds)
-    
-    self.chats.append(contentsOf: subtitles)
-  }
-  
-  private func didSetChats(oldVal: [String]) {
     if oldVal.count < self.chats.count {
       // added
       var insertPaths: [IndexPath] = []
       for i in oldVal.count ..< self.chats.count {
         insertPaths.append(IndexPath.init(row: i, section: 0))
       }
-      DispatchQueue.main.sync {
-        // Code for UI
-        self.tableViewChats.insertRows(at: insertPaths, with: .fade)
-        self.tableViewChats.scrollToRow(at: IndexPath.init(row: self.chats.count-1, section: 0), at: .bottom, animated: true)
-      }
+      self.tableViewChats.insertRows(at: insertPaths, with: .fade)
+      self.tableViewChats.scrollToRow(at: IndexPath.init(row: self.chats.count-1, section: 0), at: .bottom, animated: true)
     }
     
     if oldVal.count > self.chats.count {
@@ -108,10 +122,7 @@ class ChattingPlayerView: UIView {
       for i in 0 ..< (oldVal.count - self.chats.count) {
         deletePaths.append(IndexPath.init(row: i, section: 0))
       }
-      DispatchQueue.main.sync {
-        // Code for UI
-        self.tableViewChats.deleteRows(at: deletePaths, with: .none)
-      }
+      self.tableViewChats.deleteRows(at: deletePaths, with: .none)
     }
   }
   
@@ -121,6 +132,12 @@ class ChattingPlayerView: UIView {
   
   public func pause() {
     self.player.pause()
+  }
+  
+  @objc private func didChangeSliderValue(slider: UISlider) {
+    let time: TimeInterval = TimeInterval.init(slider.value)
+    self.subtitlesParser?.resetTime(to: time)
+    self.chats.removeAll()
   }
 }
 

@@ -11,7 +11,7 @@ import Foundation
 public class SubtitlesParser {
   private(set) var savedString: String?
   private(set) var parsedPayload: [String: [[String: Any]]]?
-  private var previousReadTimeInterval: TimeInterval = 0.0
+  private(set) var previousReadTimeInterval: TimeInterval = 0.0
   
   public init(subtitles string: String) {
     self.savedString = string
@@ -29,6 +29,10 @@ public class SubtitlesParser {
     }
   }
   
+  
+  /*
+   Parse String formated by WEBVTT to dictionary
+   */
   private func parseSubtitlesString(_ subtitles: String) -> [String: [[String: Any]]]? {
     do {
       
@@ -96,6 +100,10 @@ public class SubtitlesParser {
     }
   }
   
+  
+  /*
+   Search subtitles between from time and to time
+   */
   public func searchSubtitles(from fromTime: TimeInterval = 0.0, to toTime: TimeInterval) -> [String] {
     guard let parsedPayload = self.parsedPayload else {
       return []
@@ -134,6 +142,11 @@ public class SubtitlesParser {
     return messages
   }
   
+  
+  /*
+   Get next subtitles
+   (Search subtitles between previous time and next time)
+   */
   public func readNextSubtitles(to time: TimeInterval) -> [String] {
     guard let parsedPayload = self.parsedPayload, time > self.previousReadTimeInterval else {
       self.previousReadTimeInterval = time
@@ -163,5 +176,13 @@ public class SubtitlesParser {
     
     self.previousReadTimeInterval = time
     return messages
+  }
+  
+  
+  /*
+   Change previous time
+   */
+  public func resetTime(to time: TimeInterval = 0.0) {
+    self.previousReadTimeInterval = time
   }
 }

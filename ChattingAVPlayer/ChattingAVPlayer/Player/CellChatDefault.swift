@@ -69,8 +69,8 @@ class CellChatDefault: UITableViewCell {
     labelChat.setContentCompressionResistancePriority(UILayoutPriority(750), for: .horizontal)
   }
   
-  override func didMoveToWindow() {
-    super.didMoveToWindow()
+  override func willMove(toWindow newWindow: UIWindow?) {
+    super.willMove(toWindow: newWindow)
     self.contentView.backgroundColor = .clear
     self.layer.backgroundColor = UIColor.clear.cgColor
   }
