@@ -10,9 +10,15 @@ import UIKit
 
 class ViewController: UIViewController {
 
+  @IBOutlet weak var chattingPlayer: ChattingPlayerView!
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    if let videoUrl = URL.init(string: "https://view.pufflive.me/live/06ed-2018-05-02/1525230403_Yfq0tw.mp4"), let subtitlesUrl = URL.init(string: "https://asset.pufflive.me/subtitles/28995/1525231821/subtitles_06ed-2018-05-02/1525230403_Yfq0tw.vtt") {
+      chattingPlayer.replaceVideo(videoUrl: videoUrl, subtitleUrl: subtitlesUrl)
+      chattingPlayer.play()
+    }
   }
 
   override func didReceiveMemoryWarning() {

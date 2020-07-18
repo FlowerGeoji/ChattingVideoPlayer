@@ -1,0 +1,188 @@
+//
+//  SubtitlesParser.swift
+//  ChattingAVPlayer
+//
+//  Created by FlowerGeoji on 2018. 4. 11..
+//  Copyright © 2018년 FlowerGeoji. All rights reserved.
+//
+
+import Foundation
+
+public class SubtitlesParser {
+  private(set) var savedString: String?
+  private(set) var parsedPayload: [String: [[String: Any]]]?
+  private(set) var previousReadTimeInterval: TimeInterval = 0.0
+  
+  public init(subtitles string: String) {
+    self.savedString = string
+    if let savedString = self.savedString {
+      self.parsedPayload = self.parseSubtitlesString(savedString)
+    }
+  }
+  
+  public init(file filePath: URL, encoding: String.Encoding = String.Encoding.utf8) {
+    if let string = try? String(contentsOf: filePath, encoding: encoding) {
+      self.savedString = string
+      if let savedString = self.savedString {
+        self.parsedPayload = self.parseSubtitlesString(savedString)
+      }
+    }
+  }
+  
+  
+  /*
+   Parse String formated by WEBVTT to dictionary
+   */
+  private func parseSubtitlesString(_ subtitles: String) -> [String: [[String: Any]]]? {
+    do {
+      
+      // Prepare making payload
+      var subtitles = subtitles.replacingOccurrences(of: "\n\r\n", with: "\n\n")
+      subtitles = subtitles.replacingOccurrences(of: "\n\n\n", with: "\n\n")
+      subtitles = subtitles.replacingOccurrences(of: "\r\n", with: "\n")
+      
+      // Result, Parsed dictionary
+      var parsed: [String: [[String: Any]]] = [:]
+      
+      // Split each subtitles by regex
+      //      (\\d+:\\d+:\\d+.\\d+)\\s*-->\\s*(\\d+:\\d+:\\d+.\\d+)\\s*(\\{.*?\\})c
+      let regexStr = "(\\d+:\\d+:\\d+.\\d+)\\s*-->\\s*(\\d+:\\d+:\\d+.\\d+)\\s*(\\{.*?\\})"
+      let regex = try NSRegularExpression(pattern: regexStr, options: .caseInsensitive)
+      let matches = regex.matches(in: subtitles, options: NSRegularExpression.MatchingOptions(rawValue: 0), range: NSMakeRange(0, subtitles.count))
+      for match in matches {
+        var chatDictionary: [String: Any] = [:]
+        let lastRangeIndex = match.numberOfRanges - 1
+        if lastRangeIndex == 3 {
+          // 1 : start time
+          var h: TimeInterval = 0.0, m: TimeInterval = 0.0, s: TimeInterval = 0.0
+          let stringStart = (subtitles as NSString).substring(with: match.range(at: 1))
+          
+          let scannerStart = Scanner(string: stringStart)
+          scannerStart.scanDouble(&h)
+          scannerStart.scanString(":", into: nil)
+          scannerStart.scanDouble(&m)
+          scannerStart.scanString(":", into: nil)
+          scannerStart.scanDouble(&s)
+          
+          let start = (h * 3600.0) + (m * 60.0) + s
+          chatDictionary["start"] = start
+          
+          // 2 : end time
+          h = 0.0; m = 0.0; s = 0.0
+          let stringEnd = (subtitles as NSString).substring(with: match.range(at: 2))
+          
+          let scannerEnd = Scanner(string: stringEnd)
+          scannerEnd.scanDouble(&h)
+          scannerEnd.scanString(":", into: nil)
+          scannerEnd.scanDouble(&m)
+          scannerEnd.scanString(":", into: nil)
+          scannerEnd.scanDouble(&s)
+          
+          let end = (h * 3600.0) + (m * 60.0) + s
+          chatDictionary["end"] = end
+          
+          // 3 : chat json
+          chatDictionary["chat"] = (subtitles as NSString).substring(with: match.range(at: 3))
+          
+          // add to result
+          let startSecond = Int(start).description
+          if parsed[startSecond] == nil {
+            parsed[startSecond] = []
+          }
+          parsed[startSecond]?.append(chatDictionary)
+        }
+      }
+      
+      return parsed
+    }
+    catch {
+      return nil
+    }
+  }
+  
+  
+  /*
+   Search subtitles between from time and to time
+   */
+  public func searchSubtitles(from fromTime: TimeInterval = 0.0, to toTime: TimeInterval) -> [String] {
+    guard let parsedPayload = self.parsedPayload else {
+      return []
+    }
+    
+    var messages: [String] = []
+    
+    let fromTimeInt = Int(fromTime)
+    let toTimeInt = Int(toTime)
+    
+    for i in fromTimeInt..<toTimeInt {
+      guard let secondParsedSubtitles = parsedPayload[i.description], secondParsedSubtitles.count > 0 else {
+        continue
+      }
+      
+      secondParsedSubtitles.forEach({ (subtitleDictionary) in
+        if let message = subtitleDictionary["chat"] as? String {
+          messages.append(message)
+        }
+      })
+    }
+    
+    guard let secondParsedSubtitles = parsedPayload[toTimeInt.description], secondParsedSubtitles.count > 0 else {
+      return messages
+    }
+    secondParsedSubtitles.forEach { (subtitleDictionary) in
+      guard let startTime = subtitleDictionary["start"] as? TimeInterval, let message = subtitleDictionary["chat"] as? String else {
+        return
+      }
+      
+      if startTime <= toTime {
+        messages.append(message)
+      }
+    }
+    
+    return messages
+  }
+  
+  
+  /*
+   Get next subtitles
+   (Search subtitles between previous time and next time)
+   */
+  public func readNextSubtitles(to time: TimeInterval) -> [String] {
+    guard let parsedPayload = self.parsedPayload, time > self.previousReadTimeInterval else {
+      self.previousReadTimeInterval = time
+      return []
+    }
+    
+    let previousSecond = Int(self.previousReadTimeInterval)
+    let second = Int(time)
+    
+    var messages: [String] = []
+    
+    for s in previousSecond...second {
+      guard let secondParsedSubtitles = parsedPayload[s.description] else {
+        continue
+      }
+      
+      secondParsedSubtitles.forEach({ (subtitle) in
+        guard let startTime = subtitle["start"] as? TimeInterval, let message = subtitle["chat"] as? String else {
+          return
+        }
+        
+        if startTime > self.previousReadTimeInterval, startTime <= time {
+          messages.append(message)
+        }
+      })
+    }
+    
+    self.previousReadTimeInterval = time
+    return messages
+  }
+  
+  
+  /*
+   Change previous time
+   */
+  public func resetTime(to time: TimeInterval = 0.0) {
+    self.previousReadTimeInterval = time
+  }
+}
